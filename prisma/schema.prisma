@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["clientExtensions"]
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SubscriptionStatus {
+  PENDING
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
+
+model Subscriber {
+  id Int @id @default(autoincrement())
+
+  email String @unique
+  firstName String
+  lastName String
+  tags String[]
+  status SubscriptionStatus
+
+  confirmationCode String
+  confirmedAt DateTime?
+
+  unsubscribeCode String
+  unsubscribedAt DateTime?
+
+  messages Message[]
+
+  createdOn DateTime @default(now()) @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Broadcast {
+  id Int @id @default(autoincrement())
+
+  subject String
+  content String
+
+  sentAt DateTime?
+
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum MessageStatus {
+  QUEUED
+  SENDING
+  SENT
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+
+  subject String
+  content String
+  status MessageStatus @default(QUEUED)
+
+  subscriberId Int
+  subscriber Subscriber @relation(fields: [subscriberId], references: [id])
+
+  broadcastId Int
+  broadcast Broadcast @relation(fields: [broadcastId], references: [id])
+
+  sentAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
