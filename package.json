@@ -27,7 +27,7 @@
 		"prettier-plugin-svelte": "^2.8.1",
 		"prisma": "^4.15.0",
 		"prisma-docs-generator": "^0.8.0",
-		"prisma-erd-generator": "^1.6.2",
+		"prisma-erd-generator": "^1.7.0",
 		"superstruct": "^1.0.3",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
@@ -38,5 +38,8 @@
 	"type": "module",
 	"prisma": {
 		"seed": "vite-node ./prisma/seed.js"
+	},
+	"dependencies": {
+		"@prisma/generator-helper": "^4.16.0"
 	}
 }
